@@ -25,12 +25,12 @@ Site estático de calendário do Rio Makerspace. Calls recorrentes 1º e 3º sá
 
 ```yaml
 ---
-title: Call do Makerspace
+title: Sábado RMS
 inicio: 2026-08-01T14:00:00-03:00      # 1º sábado, horário real BRT
 fim: 2026-08-01T15:00:00-03:00
 local: Jitsi
 link_call: https://meet.jit.si/riomakerspace   # link da call → botão "Entrar" (NÃO usar `url`, Lume reserva esse campo)
-descricao: Calls mensais abertas do Rio Makerspace.
+descricao: Encontro quinzenal aberto do Rio Makerspace.
 rrule: FREQ=MONTHLY;BYDAY=SA;BYSETPOS=1,3   # 1º e 3º sábado, infinito
 exdates:
   - 2026-09-06T14:00:00-03:00           # ocorrência cancelada → vira EXDATE
@@ -77,7 +77,7 @@ Abaixo do grid: `<details class="ajuda-assinar">` com instruções manuais de `w
 ├── content/
 │   ├── index.md             # home (lista próximas calls)
 │   └── eventos/
-│       └── call-makerspace.md   # o evento recorrente (1 arquivo)
+│       └── sabado-rms.md           # o evento recorrente (1 arquivo)
 ├── templates/
 │   ├── base.njk             # layout + Vince placeholder
 │   ├── index.njk            # lista cronológica de próximas ocorrências

@@ -1,17 +1,17 @@
 ---
-title: Call do Makerspace
+title: Sábado RMS
 inicio: 2026-07-04T14:00:00-03:00
 fim: 2026-07-04T15:00:00-03:00
 local: Jitsi
 link_call: https://meet.jit.si/rms-makerspace-call
-descricao: Calls abertas do Rio Makerspace. Todo 1º e 3º sábado às 14h.
+descricao: Encontro quinzenal aberto do Rio Makerspace. Todo 1º e 3º sábado às 14h.
 rrule: FREQ=MONTHLY;BYDAY=SA;BYSETPOS=1,3
 exdates:
 excecoes:
 layout: evento.njk
 ---
 
-Calls abertas do Rio Makerspace acontecem no **primeiro e terceiro sábado** de cada mês, das **14h às 15h** (horário de Brasília).
+Encontro quinzenal aberto do Rio Makerspace, no **primeiro e terceiro sábado** de cada mês, das **14h às 15h** (horário de Brasília).
 
 ## Como participar
 
@@ -19,7 +19,7 @@ Calls abertas do Rio Makerspace acontecem no **primeiro e terceiro sábado** de 
 2. Adicione ao seu calendário pra não esquecer (links abaixo).
 3. Chegue 5 min antes pra testar áudio.
 
-## O que rola nas calls
+## O que rola no encontro
 
 - Apresentações rápidas de projetos
 - Troca de experiências e dúvidas
