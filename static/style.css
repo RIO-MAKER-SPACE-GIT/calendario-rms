@@ -596,6 +596,147 @@ html[data-theme="dark"] .card-proxima-label,
   }
 }
 
+/* —— Página do evento: 3 seções ——————————————————— */
+
+.evento-proximo {
+  margin: 2rem 0 1.5rem;
+}
+
+.proximo-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    "label data brt"
+    "tema tema tema";
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 1.4rem 1.6rem;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent-green);
+  border-radius: var(--radius);
+  background: rgba(123, 200, 47, 0.10);
+}
+
+.proximo-label {
+  grid-area: label;
+}
+
+.proximo-data {
+  grid-area: data;
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.proximo-brt {
+  grid-area: brt;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.proximo-tema {
+  grid-area: tema;
+  margin: 0.4rem 0 0;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+html[data-theme="dark"] .proximo-card,
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .proximo-card {
+    border-left-color: var(--brand-green);
+    background: rgba(173, 247, 88, 0.08);
+  }
+}
+
+@media (max-width: 640px) {
+  .proximo-card {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "label"
+      "data"
+      "brt"
+      "tema";
+    gap: 0.25rem;
+  }
+}
+
+/* Seções de listas (especiais / cancelados) */
+.eventos-especiais,
+.eventos-cancelados {
+  margin: 1.5rem 0;
+}
+
+.eventos-especiais ul,
+.eventos-cancelados ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.eventos-especiais li,
+.eventos-cancelados li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.eventos-especiais li time,
+.eventos-cancelados li time {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+}
+
+.excecao-descricao {
+  flex-basis: 100%;
+  margin: 0.35rem 0 0 1.75rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.time-dot-cancelado {
+  background: #e53935;
+}
+
+.badge-cancelado {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: 1px solid #e53935;
+  color: #e53935;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-pill);
+}
+
+html[data-theme="dark"] .badge-cancelado,
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .badge-cancelado {
+    color: #ff6b6b;
+    border-color: #ff6b6b;
+  }
+}
+
+.eventos-cancelados li time {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
 html[data-theme="dark"] .time-dot.next,
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) .time-dot.next {

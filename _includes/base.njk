@@ -185,56 +185,29 @@
         });
       }
 
-      // Lista de ocorrências (página do evento): esconde passadas, marca próxima.
+      // Listas de excecoes/exdates: só esconde passadas em runtime.
+      // (O "Próximo evento" é herói separado, não há mais lista de comuns pra marcar.)
       function atualizaLista() {
         const agora = Date.now();
-        let primeiraMarcada = false;
         document.querySelectorAll('[data-ocorrencias-lista]').forEach(function (ul) {
-          let proximoLi = null;
-          let proximoInicio = Infinity;
           ul.querySelectorAll('li[data-ocorrencia]').forEach(function (li) {
             const inicio = parseIso(li.getAttribute('data-inicio'));
             const fim = parseIso(li.getAttribute('data-fim'));
-            const tituloExc = li.getAttribute('data-titulo');
-            // Remove marcadores e badges aplicados em runs anteriores.
-            li.classList.remove('proxima','ao-vivo');
-            li.querySelector('.label-proxima')?.remove();
+            // Remove badges AO VIVO de runs anteriores.
             li.querySelector('.badge-ao-vivo')?.remove();
-            const time = li.querySelector('time');
-            if (time) time.textContent = fmtBRT(inicio);
-
-            // Esconde ocorrências passadas.
             if (fim.getTime() < agora) {
               li.style.display = 'none';
               return;
             }
             li.style.display = '';
-
-            // AO VIVO
-            if (agora >= inicio.getTime() && agora < fim.getTime()) {
-              li.classList.add('ao-vivo');
+            // AO VIVO: só pra lista de especiais (excecoes).
+            if (agora >= inicio.getTime() && agora < fim.getTime() && ul.closest('.eventos-especiais')) {
               const badge = document.createElement('span');
               badge.className = 'badge-ao-vivo';
               badge.textContent = 'AO VIVO';
               li.appendChild(badge);
             }
-
-            // Próxima = 1ª ocorrência futura que ainda não está "ao vivo".
-            if (!primeiraMarcada && inicio.getTime() > agora && inicio.getTime() < proximoInicio) {
-              proximoInicio = inicio.getTime();
-              proximoLi = li;
-            }
           });
-          if (proximoLi && !proximoLi.classList.contains('ao-vivo')) {
-            proximoLi.classList.add('proxima');
-            const label = document.createElement('span');
-            label.className = 'label-proxima';
-            label.textContent = 'Próxima';
-            const dot = proximoLi.querySelector('.time-dot');
-            if (dot) dot.classList.add('next');
-            proximoLi.insertBefore(label, proximoLi.firstChild);
-            primeiraMarcada = true;
-          }
         });
       }
 

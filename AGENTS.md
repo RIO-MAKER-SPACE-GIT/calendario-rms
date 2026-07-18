@@ -15,7 +15,8 @@ Site estático de calendário do Rio Makerspace. Calls recorrentes 1º e 3º sá
 ## Princípios
 
 - **Pouco JavaScript client-side.** Site é SSG (HTML+CSS), mas há um snippet vanilla inline no `base.njk` que executa em runtime pra: destacar a próxima ocorrência real (não a do build), esconder ocorrências passadas, e exibir badge "AO VIVO" quando uma ocorrência está rolando agora. Sem framework, sem fetch, sem onclick nos botões de calendário (esses continuam `<a href>` puro).
-- **Build expande, runtime reordena.** O hook `gen_ics.ts` gera `proximas_ocorrencias` com 12 itens no build, e os templates embarcam cada data como `data-attribute` (`data-inicio`, `data-fim`, `data-titulo`) nos elementos. O JS só esconde passadas, marca "Próxima" e "AO VIVO". Sem biblioteca de `rrule` client-side.
+- **Build expande, runtime reordena.** O hook `gen_ics.ts` gera `proximas_ocorrencias` com 12 itens no build, e os templates embarcam cada data como `data-attribute` (`data-inicio`, `data-fim`) nos elementos e um `<script type="application/json">` com o array completo. O JS só esconde passadas, recalcula a próxima ocorrência real e exibe badge "AO VIVO". Sem biblioteca de `rrule` client-side.
+- **Página do evento tem 3 seções** (não uma lista de 12 datas iguais): (1) **Próximo evento** — hero card com a 1ª ocorrência futura (com tema se for `excecao`), badges "Próxima" e "AO VIVO"; (2) **Eventos especiais** — `excecoes` futuras; (3) **Eventos cancelados** — `exdates` futuros. Eventos one-off (sem `rrule`) mostram só a seção 1.
 - **`.ics` é gerado em build time** por hook `afterBuild`, não em runtime.
 - **1 arquivo = 1 série recorrente.** Não criar 1 `.md` por ocorrência. Usar `rrule` + `exdates` + `excecoes`.
 - **Preservar motivação SSG.** Não introduzir SaaS (Luma, Google Calendar embed) nem backend dinâmico. MVP sem RSVP serverless; backend Cloudflare Worker é fase 2 se necessário.
@@ -90,7 +91,7 @@ Responsabilidades, em ordem:
    - `EXDATE` para cada item de `exdates[]`.
    - Para cada `excecoes[]`: gerar `VEVENT` extra com mesmo `UID`, `RECURRENCE-ID` apontando pra data da exceção, e `SUMMARY`/`DESCRIPTION` sobrescritos.
 3. Escrever `_site/cal/<slug>.ics`.
-4. Calcular próximas 12 ocorrências com `npm:rrule`, filtrar `exdates`, mesclar `excecoes`, serializar como `_data/proximas.json` (lido pelos templates via `site.data`).
+4. Calcular próximas 12 ocorrências com `npm:rrule`, filtrar `exdates`, mesclar `excecoes`. Expor no `page.data`: `proximas_ocorrencias` (array completo, embarcado como JSON inline na home/hero), `proxima_ocorrencia` (1ª futura), `excecoes_futuras` e `exdates_futuros` (só datas >= hoje, pró template renderizar as seções 2 e 3).
 
 ## Comandos
 

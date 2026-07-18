@@ -13,7 +13,7 @@
         </svg>
         {{ local }}
       </span>
-      {% if proximas_ocorrencias and proximas_ocorrencias.length > 0 %}
+      {% if proxima_ocorrencia %}
       <span class="horario">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="10"/>
@@ -21,10 +21,10 @@
         </svg>
         <time
           data-ocorrencia-visivel
-          data-inicio="{{ proximas_ocorrencias[0].iso }}"
-          data-fim="{{ proximas_ocorrencias[0].fim_iso }}"
-          datetime="{{ proximas_ocorrencias[0].iso }}"
-        >{{ proximas_ocorrencias[0].data_fmt }}</time> — BRT
+          data-inicio="{{ proxima_ocorrencia.iso }}"
+          data-fim="{{ proxima_ocorrencia.fim_iso }}"
+          datetime="{{ proxima_ocorrencia.iso }}"
+        >{{ proxima_ocorrencia.data_fmt }}</time> — BRT
       </span>
       {% endif %}
     </p>
@@ -34,29 +34,58 @@
     {{ content | safe }}
   </section>
 
-  {% if proximas_ocorrencias and proximas_ocorrencias.length > 0 %}
-  <section class="proximas">
-    <h2>Próximas ocorrências</h2>
-    <ul class="ocorrencias" data-ocorrencias-lista>
-      {% for occ in proximas_ocorrencias %}
-      <li
-        data-ocorrencia
-        data-inicio="{{ occ.iso }}"
-        data-fim="{{ occ.fim_iso }}"
-        {% if occ.titulo %}data-titulo="{{ occ.titulo }}"{% endif %}
-      >
+  {% if proxima_ocorrencia %}
+  <section class="evento-proximo">
+    <h2>Próximo evento</h2>
+    <div class="proximo-card" data-ocorrencia data-inicio="{{ proxima_ocorrencia.iso }}" data-fim="{{ proxima_ocorrencia.fim_iso }}">
+      <div class="proximo-label">
+        <span class="label-proxima">Próxima</span>
+      </div>
+      <time class="proximo-data" datetime="{{ proxima_ocorrencia.iso }}" data-ocorrencia-visivel data-inicio="{{ proxima_ocorrencia.iso }}" data-fim="{{ proxima_ocorrencia.fim_iso }}">{{ proxima_ocorrencia.data_fmt }}</time>
+      <span class="proximo-brt">BRT</span>
+      {% if proxima_ocorrencia.titulo %}
+      <p class="proximo-tema">{{ proxima_ocorrencia.titulo }}</p>
+      {% endif %}
+    </div>
+    {# JSON das próximas ocorrências comuns pra o JS escolher a real em runtime #}
+    <script type="application/json" data-ocorrencias>
+      {{ proximas_ocorrencias | dump | safe }}
+    </script>
+  </section>
+  {% endif %}
+
+  {% if excecoes_futuras and excecoes_futuras.length > 0 %}
+  <section class="eventos-especiais">
+    <h2>Eventos especiais</h2>
+    <ul data-ocorrencias-lista>
+      {% for exc in excecoes_futuras %}
+      <li data-ocorrencia data-inicio="{{ exc.iso }}" data-fim="{{ exc.iso }}">
         <span class="time-dot" aria-hidden="true"></span>
-        <time datetime="{{ occ.iso }}">{{ occ.data_fmt }}</time>
-        {% if occ.titulo %}
+        <time datetime="{{ exc.iso }}">{{ exc.data_fmt }}</time>
         <span class="badge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
             <path d="M6 4v12"/>
             <path d="M6 12h13a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2H9"/>
           </svg>
-          {{ occ.titulo }}
+          {{ exc.titulo }}
         </span>
-        {% endif %}
+        {% if exc.descricao %}<p class="excecao-descricao">{{ exc.descricao }}</p>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {% if exdates_futuros and exdates_futuros.length > 0 %}
+  <section class="eventos-cancelados">
+    <h2>Eventos cancelados</h2>
+    <ul data-ocorrencias-lista>
+      {% for exd in exdates_futuros %}
+      <li data-ocorrencia data-inicio="{{ exd.iso }}" data-fim="{{ exd.iso }}">
+        <span class="time-dot time-dot-cancelado" aria-hidden="true"></span>
+        <time datetime="{{ exd.iso }}">{{ exd.data_fmt }}</time>
+        <span class="badge-cancelado">Cancelada</span>
       </li>
       {% endfor %}
     </ul>
@@ -66,7 +95,7 @@
   <section class="botoes">
     <h2>Adicionar ao calendário</h2>
     <div class="btn-group">
-      {% set occ = proximas_ocorrencias[0] %}
+      {% set occ = proxima_ocorrencia %}
       {% if occ %}
       <a class="btn btn-google" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text={{ title | urlencode }}&dates={{ occ.inicio_utc }}/{{ occ.fim_utc }}&location={{ local | urlencode }}&details={{ descricao | urlencode }}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

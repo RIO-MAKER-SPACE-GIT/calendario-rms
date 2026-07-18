@@ -23,6 +23,18 @@ interface EventoFrontmatter {
   }>;
 }
 
+interface ExcecaoFutura {
+  iso: string;
+  data_fmt: string;
+  titulo: string;
+  descricao?: string;
+}
+
+interface ExdateFuturo {
+  iso: string;
+  data_fmt: string;
+}
+
 interface Ocorrencia {
   iso: string;
   fim_iso: string;
@@ -189,6 +201,7 @@ function gerarIcs(ev: EventoFrontmatter, slug: string): string {
 
 export default function (site: any) {
   site.preprocess([".md"], (pages: any[]) => {
+    const agora = new Date();
     for (const page of pages) {
       const data = page.data;
       if (data.layout !== "evento.njk") continue;
@@ -207,6 +220,36 @@ export default function (site: any) {
 
       const ocorrencias = expandirOcorrencias(ev);
       data.proximas_ocorrencias = ocorrencias;
+
+      // Próxima ocorrência real (1ª futura). Usada no hero "Próximo evento".
+      data.proxima_ocorrencia = ocorrencias.find((o) =>
+        new Date(o.fim_iso || o.iso).getTime() >= agora.getTime()
+      ) || ocorrencias[0];
+
+      // Exceções futuras: {iso, data_fmt, titulo, descricao?}
+      data.excecoes_futuras = (ev.excecoes || [])
+        .filter((exc) => paraUtc(exc.data).getTime() >= agora.getTime())
+        .map((exc) => {
+          const d = paraUtc(exc.data);
+          return {
+            iso: d.toISOString(),
+            data_fmt: fmtHumano(d),
+            titulo: exc.titulo,
+            descricao: exc.descricao,
+          } as ExcecaoFutura;
+        });
+
+      // Exdates futuros: {iso, data_fmt}
+      data.exdates_futuros = (ev.exdates || [])
+        .filter((d) => paraUtc(d).getTime() >= agora.getTime())
+        .map((d) => {
+          const dt = paraUtc(d);
+          return {
+            iso: dt.toISOString(),
+            data_fmt: fmtHumano(dt),
+          } as ExdateFuturo;
+        });
+
       data.slug = page.data.url
         ? String(page.data.url).replace(/\/$/, "").split("/").pop() || "evento"
         : "evento";
