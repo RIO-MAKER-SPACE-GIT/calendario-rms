@@ -1,0 +1,134 @@
+{% extends "base.njk" %}
+
+{% block content %}
+<article class="container evento-pagina">
+  <header class="evento-header">
+    <p class="eyebrow">Calendário — Rio Maker Space</p>
+    <h1>{{ title }}</h1>
+    <p class="meta">
+      <span class="local">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        {{ local }}
+      </span>
+      {% if proximas_ocorrencias and proximas_ocorrencias.length > 0 %}
+      <span class="horario">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        {{ proximas_ocorrencias[0].data_fmt }} — BRT
+      </span>
+      {% endif %}
+    </p>
+  </header>
+
+  <section class="descricao">
+    {{ content | safe }}
+  </section>
+
+  {% if proximas_ocorrencias and proximas_ocorrencias.length > 0 %}
+  <section class="proximas">
+    <h2>Próximas ocorrências</h2>
+    <ul class="ocorrencias">
+      {% for occ in proximas_ocorrencias %}
+      <li{% if loop.first %} class="proxima"{% endif %}>
+        <span class="time-dot {% if loop.first %}next{% endif %}" aria-hidden="true"></span>
+        {% if loop.first %}<span class="label-proxima">Próxima</span>{% endif %}
+        <time datetime="{{ occ.iso }}">{{ occ.data_fmt }}</time>
+        {% if occ.titulo %}
+        <span class="badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+            <path d="M6 4v12"/>
+            <path d="M6 12h13a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2H9"/>
+          </svg>
+          {{ occ.titulo }}
+        </span>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <section class="botoes">
+    <h2>Adicionar ao calendário</h2>
+    <div class="btn-group">
+      {% set occ = proximas_ocorrencias[0] %}
+      {% if occ %}
+      <a class="btn btn-google" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text={{ title | urlencode }}&dates={{ occ.inicio_utc }}/{{ occ.fim_utc }}&location={{ local | urlencode }}&details={{ descricao | urlencode }}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        Google Calendar
+      </a>
+      <a class="btn btn-outlook" href="https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&startdt={{ occ.inicio_utc_iso }}&enddt={{ occ.fim_utc_iso }}&subject={{ title | urlencode }}&body={{ descricao | urlencode }}&location={{ local | urlencode }}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        Outlook
+      </a>
+      <a class="btn btn-outline" href="/cal/{{ slug }}.ics" download>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Baixar .ics
+      </a>
+      <a class="btn btn-assinar" href="webcal://calendario.riomakerspace.com.br/cal/{{ slug }}.ics">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 18v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/>
+          <polyline points="8 11 12 15 16 11"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Assinar
+      </a>
+      {% endif %}
+
+      {% if link_call %}
+      <a class="btn btn-call" href="{{ link_call }}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        Entrar na call
+      </a>
+      {% endif %}
+    </div>
+
+    <details class="ajuda-assinar">
+      <summary>Não aconteceu nada ao clicar em “Assinar”?</summary>
+      <p>
+        O botão “Assinar” usa o protocolo <code>webcal://</code>, que abre o app de
+        calendário do seu sistema (como <code>mailto:</code> abre o app de email).
+        Se nada aconteceu, seu navegador não tem um app de calendário associado.
+      </p>
+      <p><strong>Como assinar manualmente:</strong></p>
+      <ul>
+        <li><strong>Google Calendar:</strong> Outros calendários → Adicionar pela URL →
+          cole <code>https://calendario.riomakerspace.com.br/cal/{{ slug }}.ics</code></li>
+        <li><strong>Apple Calendar:</strong> Arquivo → Nova assinatura de calendário →
+          cole <code>webcal://calendario.riomakerspace.com.br/cal/{{ slug }}.ics</code></li>
+        <li><strong>Outlook:</strong> Adicionar calendário → Assinar pela web →
+          cole <code>https://calendario.riomakerspace.com.br/cal/{{ slug }}.ics</code></li>
+        <li><strong>Thunderbird / outros:</strong> Arquivo → Assinar calendário →
+          cole a URL <code>webcal://</code> ou <code>https://</code> acima</li>
+      </ul>
+      <p class="hint">
+        Assinando, seu calendário refetcha a URL sozinho e pega cancelamentos e
+        mudanças de tema automaticamente. <strong>Baixar .ics</strong> é importação
+        única (one-shot) — não atualiza.
+      </p>
+    </details>
+  </section>
+</article>
+{% endblock %}

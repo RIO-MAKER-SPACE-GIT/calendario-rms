@@ -1,0 +1,33 @@
+{% extends "base.njk" %}
+
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Calendário Rio Maker Space</p>
+  <h1>Não perca nenhum encontro da comunidade</h1>
+  <p>
+    Acompanhe as calls abertas, workshops e eventos do Rio Makerspace.
+    Adicione direto no seu calendário ou assine para receber atualizações automaticamente.
+  </p>
+</section>
+
+<section class="container">
+  <h2>Próximos encontros</h2>
+
+  {% set eventos = search.pages("layout=evento.njk") %}
+
+  <div class="eventos-lista">
+    {% for evento in eventos %}
+    <a href="{{ evento.url }}" class="evento-card {% if loop.index0 % 3 == 1 %}evento-card-cyan{% elif loop.index0 % 3 == 2 %}evento-card-orange{% endif %}">
+      <h2>{{ evento.title }}</h2>
+      <p>{{ evento.descricao }}</p>
+      <span class="link-arrow">
+        Ver detalhes
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+        </svg>
+      </span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
