@@ -747,9 +747,13 @@ time.ao-vivo { color: var(--danger-fg); }
    Seletores sem :where() pra ter especificidade (0,2,0) > a:hover (0,1,1).
 */
 .btn-google:hover,
-.btn-outlook:hover,
-.btn-call:hover {
+.btn-outlook:hover {
   color: #fff;
+  text-decoration: none;
+}
+
+.btn-call:hover {
+  color: var(--brand-black);
   text-decoration: none;
 }
 
@@ -778,10 +782,10 @@ time.ao-vivo { color: var(--danger-fg); }
   text-decoration: none;
 }
 
-.btn-call    { background: #5865f2; color: #fff; }
+.btn-call    { background: var(--accent-green); color: var(--brand-black); }
 .btn-call:hover {
-  filter: brightness(110%);
-  box-shadow: 0 0 16px rgba(88, 101, 242, 0.4);
+  filter: brightness(105%);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--accent-green) 40%, transparent);
 }
 
 .btn-google { background: #4285f4; color: #fff; }

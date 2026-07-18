@@ -28,8 +28,8 @@ Site estático de calendário do Rio Makerspace. Calls recorrentes 1º e 3º sá
 title: Call do Makerspace
 inicio: 2026-08-01T14:00:00-03:00      # 1º sábado, horário real BRT
 fim: 2026-08-01T15:00:00-03:00
-local: Discord
-link_call: https://discord.gg/abc       # link da call → botão "Entrar" (NÃO usar `url`, Lume reserva esse campo)
+local: Jitsi
+link_call: https://meet.jit.si/riomakerspace   # link da call → botão "Entrar" (NÃO usar `url`, Lume reserva esse campo)
 descricao: Calls mensais abertas do Rio Makerspace.
 rrule: FREQ=MONTHLY;BYDAY=SA;BYSETPOS=1,3   # 1º e 3º sábado, infinito
 exdates:

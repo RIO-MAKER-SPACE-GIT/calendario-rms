@@ -24,4 +24,4 @@ Workshop semanal de **impressão 3D** no lab do Rio Makerspace.
 - Arquivo STL que quer imprimir (ou usa um dos nossos exemplos)
 - Vontade de aprender e sujar as mãos
 
-Vagas limitadas a 8 pessoas por sessão. Confirme presença no Discord!
+Vagas limitadas a 8 pessoas por sessão. Confirme presença no WhatsApp!
