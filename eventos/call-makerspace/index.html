@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Call do Makerspace — Calendário Rio Makerspace</title>
+  <meta name="theme-color" content="#adf758">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="/style.css">
+  <!-- Vince analytics — placeholder. Trocar pelo domínio da sua instância quando ativar. -->
+  <!-- <script defer data-domain="calendario.riomakerspace.com.br" src="https://vince.exemplo.com/script.js"></script> -->
+  <script>
+    (function () {
+      const saved = localStorage.getItem('rms-theme');
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = saved ? saved : (systemDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <style>
+    /* Evita flash dos dois ícones de tema durante o carregamento do CSS */
+    html[data-theme="light"] .theme-toggle .icon-moon,
+    html[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+  </style>
+<meta property="og:type" content="website">
+<meta property="og:url" content="http://localhost:3000/eventos/call-makerspace/">
+<meta name="twitter:card" content="summary">
+<meta name="generator" content="Lume 3.2.6">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="brand">
+        <img src="https://www.riomakerspace.com.br/images/RMS-logo.png" alt="Rio Maker Space">
+        <span class="brand-text">Rio <span>Maker Space</span></span>
+      </a>
+
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" aria-label="Alternar tema" title="Alternar tema">
+          <svg class="icon-sun" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="icon-moon" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          </svg>
+        </button>
+
+        <a class="header-link" href="https://www.riomakerspace.com.br/">
+          Site principal
+          <svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+<article class="container evento-pagina">
+  <header class="evento-header">
+    <p class="eyebrow">Calendário — Rio Maker Space</p>
+    <h1>Call do Makerspace</h1>
+    <p class="meta">
+      <span class="local">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        Jitsi
+      </span>
+      
+      <span class="horario">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <time data-ocorrencia-visivel="" data-inicio="2026-07-18T17:00:00.000Z" data-fim="2026-07-18T18:00:00.000Z" datetime="2026-07-18T17:00:00.000Z">sáb, 18 jul 2026 — 14h00</time> — BRT
+      </span>
+      
+    </p>
+  </header>
+
+  <section class="descricao">
+    <p>Calls abertas do Rio Makerspace acontecem no <strong>primeiro e terceiro sábado</strong> de cada mês, das <strong>14h às 15h</strong> (horário de Brasília).</p>
+<h2>Como participar</h2>
+<ol>
+<li>Entre na sala do Jitsi (botão "Entrar na call" acima).</li>
+<li>Adicione ao seu calendário pra não esquecer (links abaixo).</li>
+<li>Chegue 5 min antes pra testar áudio.</li>
+</ol>
+<h2>O que rola nas calls</h2>
+<ul>
+<li>Apresentações rápidas de projetos</li>
+<li>Troca de experiências e dúvidas</li>
+<li>Planejamento de próximos eventos e workshops</li>
+</ul>
+<p>Qualquer pessoa pode participar, não precisa ser membro formal. Tem algo pra apresentar? Fala com a gente no <a href="https://chat.whatsapp.com/KkQGRYv6HLYCCNTMao4uVF">WhatsApp</a>!</p>
+
+  </section>
+
+  
+  <section class="evento-proximo">
+    <h2>Próximo evento</h2>
+    <div class="proximo-card" data-ocorrencia="" data-inicio="2026-07-18T17:00:00.000Z" data-fim="2026-07-18T18:00:00.000Z">
+      <div class="proximo-label">
+        <span class="label-proxima">Próxima</span>
+      </div>
+      <time class="proximo-data" datetime="2026-07-18T17:00:00.000Z" data-ocorrencia-visivel="" data-inicio="2026-07-18T17:00:00.000Z" data-fim="2026-07-18T18:00:00.000Z">sáb, 18 jul 2026 — 14h00</time>
+      <span class="proximo-brt">BRT</span>
+      
+    </div>
+    
+    <script type="application/json" data-ocorrencias="">
+      [{"iso":"2026-07-18T17:00:00.000Z","fim_iso":"2026-07-18T18:00:00.000Z","inicio_utc":"20260718T170000Z","fim_utc":"20260718T180000Z","inicio_utc_iso":"2026-07-18T17:00:00Z","fim_utc_iso":"2026-07-18T18:00:00Z","data_fmt":"sáb, 18 jul 2026 — 14h00"},{"iso":"2026-08-01T17:00:00.000Z","fim_iso":"2026-08-01T18:00:00.000Z","inicio_utc":"20260801T170000Z","fim_utc":"20260801T180000Z","inicio_utc_iso":"2026-08-01T17:00:00Z","fim_utc_iso":"2026-08-01T18:00:00Z","data_fmt":"sáb, 01 ago 2026 — 14h00"},{"iso":"2026-08-15T17:00:00.000Z","fim_iso":"2026-08-15T18:00:00.000Z","inicio_utc":"20260815T170000Z","fim_utc":"20260815T180000Z","inicio_utc_iso":"2026-08-15T17:00:00Z","fim_utc_iso":"2026-08-15T18:00:00Z","data_fmt":"sáb, 15 ago 2026 — 14h00"},{"iso":"2026-09-05T17:00:00.000Z","fim_iso":"2026-09-05T18:00:00.000Z","inicio_utc":"20260905T170000Z","fim_utc":"20260905T180000Z","inicio_utc_iso":"2026-09-05T17:00:00Z","fim_utc_iso":"2026-09-05T18:00:00Z","data_fmt":"sáb, 05 set 2026 — 14h00"},{"iso":"2026-09-19T17:00:00.000Z","fim_iso":"2026-09-19T18:00:00.000Z","inicio_utc":"20260919T170000Z","fim_utc":"20260919T180000Z","inicio_utc_iso":"2026-09-19T17:00:00Z","fim_utc_iso":"2026-09-19T18:00:00Z","data_fmt":"sáb, 19 set 2026 — 14h00"},{"iso":"2026-10-03T17:00:00.000Z","fim_iso":"2026-10-03T18:00:00.000Z","inicio_utc":"20261003T170000Z","fim_utc":"20261003T180000Z","inicio_utc_iso":"2026-10-03T17:00:00Z","fim_utc_iso":"2026-10-03T18:00:00Z","data_fmt":"sáb, 03 out 2026 — 14h00"},{"iso":"2026-10-17T17:00:00.000Z","fim_iso":"2026-10-17T18:00:00.000Z","inicio_utc":"20261017T170000Z","fim_utc":"20261017T180000Z","inicio_utc_iso":"2026-10-17T17:00:00Z","fim_utc_iso":"2026-10-17T18:00:00Z","data_fmt":"sáb, 17 out 2026 — 14h00"},{"iso":"2026-11-07T17:00:00.000Z","fim_iso":"2026-11-07T18:00:00.000Z","inicio_utc":"20261107T170000Z","fim_utc":"20261107T180000Z","inicio_utc_iso":"2026-11-07T17:00:00Z","fim_utc_iso":"2026-11-07T18:00:00Z","data_fmt":"sáb, 07 nov 2026 — 14h00"},{"iso":"2026-11-21T17:00:00.000Z","fim_iso":"2026-11-21T18:00:00.000Z","inicio_utc":"20261121T170000Z","fim_utc":"20261121T180000Z","inicio_utc_iso":"2026-11-21T17:00:00Z","fim_utc_iso":"2026-11-21T18:00:00Z","data_fmt":"sáb, 21 nov 2026 — 14h00"},{"iso":"2026-12-05T17:00:00.000Z","fim_iso":"2026-12-05T18:00:00.000Z","inicio_utc":"20261205T170000Z","fim_utc":"20261205T180000Z","inicio_utc_iso":"2026-12-05T17:00:00Z","fim_utc_iso":"2026-12-05T18:00:00Z","data_fmt":"sáb, 05 dez 2026 — 14h00"},{"iso":"2026-12-19T17:00:00.000Z","fim_iso":"2026-12-19T18:00:00.000Z","inicio_utc":"20261219T170000Z","fim_utc":"20261219T180000Z","inicio_utc_iso":"2026-12-19T17:00:00Z","fim_utc_iso":"2026-12-19T18:00:00Z","data_fmt":"sáb, 19 dez 2026 — 14h00"},{"iso":"2027-01-02T17:00:00.000Z","fim_iso":"2027-01-02T18:00:00.000Z","inicio_utc":"20270102T170000Z","fim_utc":"20270102T180000Z","inicio_utc_iso":"2027-01-02T17:00:00Z","fim_utc_iso":"2027-01-02T18:00:00Z","data_fmt":"sáb, 02 jan 2027 — 14h00"}]
+    </script>
+  </section>
+  
+
+  
+
+  
+
+  <section class="adicionar-calendario">
+    <h2>Adicionar ao calendário</h2>
+
+    
+    <a class="btn btn-call btn-call-largo" href="https://meet.jit.si/rms-makerspace-call">
+      <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+      </svg>
+      Entrar na call
+    </a>
+    
+
+    
+    
+    <div class="cal-options">
+      <article class="cal-card cal-card-google">
+        <header class="cal-card-header">
+          <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <h3>Google Calendar</h3>
+        </header>
+        <p class="cal-card-desc">Abre o Google Calendar na web com o evento pré-preenchido.</p>
+        <a class="btn btn-google cal-card-cta" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Call%20do%20Makerspace&amp;dates=20260718T170000Z/20260718T180000Z&amp;location=Jitsi&amp;details=Calls%20abertas%20do%20Rio%20Makerspace.%20Todo%201%C2%BA%20e%203%C2%BA%20s%C3%A1bado%20%C3%A0s%2014h.">
+          Abrir no Google
+        </a>
+      </article>
+
+      <article class="cal-card cal-card-outlook">
+        <header class="cal-card-header">
+          <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <h3>Outlook</h3>
+        </header>
+        <p class="cal-card-desc">Abre o Outlook Live na web com o evento pré-preenchido.</p>
+        <a class="btn btn-outlook cal-card-cta" href="https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&amp;rru=addevent&amp;startdt=2026-07-18T17:00:00Z&amp;enddt=2026-07-18T18:00:00Z&amp;subject=Call%20do%20Makerspace&amp;body=Calls%20abertas%20do%20Rio%20Makerspace.%20Todo%201%C2%BA%20e%203%C2%BA%20s%C3%A1bado%20%C3%A0s%2014h.&amp;location=Jitsi">
+          Abrir no Outlook
+        </a>
+      </article>
+
+      <article class="cal-card cal-card-ics">
+        <header class="cal-card-header">
+          <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <h3>Baixar .ics</h3>
+        </header>
+        <p class="cal-card-desc">Padrão iCalendar. Funciona em qualquer app. Importação única — não atualiza sozinho.</p>
+        <a class="btn btn-outline cal-card-cta" href="/cal/call-makerspace.ics" download="">
+          Baixar
+        </a>
+      </article>
+
+      <article class="cal-card cal-card-assinar">
+        <header class="cal-card-header">
+          <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 18v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"></path>
+            <polyline points="8 11 12 15 16 11"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <h3>Assinar (auto-update)</h3>
+        </header>
+        <p class="cal-card-desc">Assina via <code>webcal://</code>. App refetcha sozinho e pega cancelamentos, exceções e mudanças de tema.</p>
+        <a class="btn btn-assinar cal-card-cta" href="webcal://calendario.riomakerspace.com.br/cal/call-makerspace.ics">
+          Assinar
+        </a>
+      </article>
+
+      
+      <article class="cal-card cal-card-flat">
+        <header class="cal-card-header">
+          <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2 2 7l10 5 10-5-10-5z"></path>
+            <path d="m2 17 10 5 10-5"></path>
+            <path d="m2 12 10 5 10-5"></path>
+          </svg>
+          <h3>.ics expandido</h3>
+        </header>
+        <p class="cal-card-desc">12 ocorrências como eventos individuais. Maior compatibilidade. Sem auto-update — re-baixe para atualizar exceções.</p>
+        <a class="btn btn-outline cal-card-cta" href="/cal/call-makerspace-flat.ics" download="">
+          Baixar flat
+        </a>
+      </article>
+      
+    </div>
+    
+
+    <details class="ajuda-assinar">
+      <summary>Não aconteceu nada ao clicar em “Assinar”?</summary>
+      <p>
+        O botão “Assinar” usa o protocolo <code>webcal://</code>, que abre o app de
+        calendário do seu sistema (como <code>mailto:</code> abre o app de email).
+        Se nada aconteceu, seu navegador não tem um app de calendário associado.
+      </p>
+      <p><strong>Como assinar manualmente:</strong></p>
+      <ul>
+        <li><strong>Google Calendar:</strong> Outros calendários → Adicionar pela URL →
+          cole <code>https://calendario.riomakerspace.com.br/cal/call-makerspace.ics</code></li>
+        <li><strong>Apple Calendar:</strong> Arquivo → Nova assinatura de calendário →
+          cole <code>webcal://calendario.riomakerspace.com.br/cal/call-makerspace.ics</code></li>
+        <li><strong>Outlook:</strong> Adicionar calendário → Assinar pela web →
+          cole <code>https://calendario.riomakerspace.com.br/cal/call-makerspace.ics</code></li>
+        <li><strong>Thunderbird / outros:</strong> Arquivo → Assinar calendário →
+          cole a URL <code>webcal://</code> ou <code>https://</code> acima</li>
+      </ul>
+      <p class="hint">
+        Assinando, seu calendário refetcha a URL sozinho e pega cancelamentos e
+        mudanças de tema automaticamente. <strong>Baixar .ics</strong> é importação
+        única (one-shot) — não atualiza.
+      </p>
+    </details>
+  </section>
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-rule" aria-hidden="true"></div>
+      <div class="footer-brand">Rio Maker Space</div>
+      <p>
+        Calls 1º e 3º sábado do mês, 14h-15h BRT.
+        <a href="https://www.riomakerspace.com.br">www.riomakerspace.com.br</a>
+      </p>
+      <div class="footer-links">
+        <a href="https://www.riomakerspace.com.br/projects">Projetos</a>
+        <a href="https://www.riomakerspace.com.br/events">Eventos</a>
+        <a href="https://www.riomakerspace.com.br/about">Sobre</a>
+        <a href="mailto:contato@riomakerspace.com.br">Contato</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const toggle = document.querySelector('.theme-toggle');
+      const html = document.documentElement;
+      const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+      function getStoredTheme() {
+        return localStorage.getItem('rms-theme');
+      }
+
+      function setStoredTheme(theme) {
+        localStorage.setItem('rms-theme', theme);
+      }
+
+      function applyTheme(theme) {
+        html.setAttribute('data-theme', theme);
+      }
+
+      function toggleTheme() {
+        const current = html.getAttribute('data-theme') || 'light';
+        const next = current === 'light' ? 'dark' : 'light';
+        applyTheme(next);
+        setStoredTheme(next);
+      }
+
+      if (toggle) {
+        toggle.addEventListener('click', toggleTheme);
+      }
+
+      // Se o usuário nunca escolheu manualmente, acompanha o sistema.
+      media.addEventListener('change', function (event) {
+        if (!getStoredTheme()) {
+          applyTheme(event.matches ? 'dark' : 'light');
+        }
+      });
+    })();
+
+    // —— Calendário runtime ———————————————————————————————
+    // Sem framework. Lê data-attributes embarcados no build e:
+    //   1. esconde ocorrências passadas,
+    //   2. destaca a 1ª ocorrência futura como "Próxima",
+    //   3. exibe badge "AO VIVO" quando uma ocorrência está rolando agora.
+    // Sem fetch, sem rrule client-side. Reordena o que já está no HTML.
+    (function () {
+      const MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+      const DIAS = ['dom','seg','ter','qua','qui','sex','sáb'];
+
+      function fmtBRT(d) {
+        const parts = new Intl.DateTimeFormat('pt-BR', {
+          timeZone: 'America/Sao_Paulo',
+          weekday: 'short', day: '2-digit', month: 'short', year: 'numeric',
+          hour: '2-digit', minute: '2-digit', hour12: false,
+        }).formatToParts(d);
+        const get = (t) => parts.find((p) => p.type === t)?.value || '';
+        const wd = get('weekday').replace('.','');
+        const day = get('day');
+        const mon = get('month').replace('.','').slice(0,3);
+        const yr = get('year');
+        const h = get('hour');
+        const m = get('minute');
+        return wd + ', ' + day + ' ' + mon + ' ' + yr + ' — ' + h + 'h' + m;
+      }
+
+      function parseIso(s) { return new Date(s); }
+
+      // Atualiza o <time> com a próxima ocorrência real, dentro de cards/headers.
+      function atualizaVisivel() {
+        const agora = Date.now();
+        document.querySelectorAll('[data-ocorrencia-visivel]').forEach(function (el) {
+          // Usa o JSON embarcado próximo, se houver, pra escolher a próxima real.
+          const card = el.closest('[data-evento-card]') || el.closest('.evento-pagina');
+          let ocorr = null;
+          if (card) {
+            const script = card.querySelector('script[data-ocorrencias]');
+            if (script) {
+              try {
+                const lista = JSON.parse(script.textContent);
+                ocorr = (lista || []).find(function (o) {
+                  return parseIso(o.fim_iso || o.iso).getTime() >= agora;
+                }) || lista[0];
+              } catch (_e) {}
+            }
+          }
+          if (!ocorr) return;
+          const inicio = parseIso(ocorr.iso);
+          const fim = parseIso(ocorr.fim_iso || ocorr.iso);
+          el.setAttribute('datetime', ocorr.iso);
+          el.setAttribute('data-inicio', ocorr.iso);
+          el.setAttribute('data-fim', ocorr.fim_iso || ocorr.iso);
+          el.textContent = fmtBRT(inicio);
+          // Badge AO VIVO no card/header
+          if (agora >= inicio.getTime() && agora < fim.getTime()) {
+            el.classList.add('ao-vivo');
+            let badge = el.parentNode.querySelector('.badge-ao-vivo');
+            if (!badge) {
+              badge = document.createElement('span');
+              badge.className = 'badge-ao-vivo';
+              badge.textContent = 'AO VIVO';
+              el.parentNode.insertBefore(badge, el.nextSibling);
+            }
+          }
+        });
+      }
+
+      // Listas de excecoes/exdates: só esconde passadas em runtime.
+      // (O "Próximo evento" é herói separado, não há mais lista de comuns pra marcar.)
+      function atualizaLista() {
+        const agora = Date.now();
+        document.querySelectorAll('[data-ocorrencias-lista]').forEach(function (ul) {
+          ul.querySelectorAll('li[data-ocorrencia]').forEach(function (li) {
+            const inicio = parseIso(li.getAttribute('data-inicio'));
+            const fim = parseIso(li.getAttribute('data-fim'));
+            // Remove badges AO VIVO de runs anteriores.
+            li.querySelector('.badge-ao-vivo')?.remove();
+            if (fim.getTime() < agora) {
+              li.style.display = 'none';
+              return;
+            }
+            li.style.display = '';
+            // AO VIVO: só pra lista de especiais (excecoes).
+            if (agora >= inicio.getTime() && agora < fim.getTime() && ul.closest('.eventos-especiais')) {
+              const badge = document.createElement('span');
+              badge.className = 'badge-ao-vivo';
+              badge.textContent = 'AO VIVO';
+              li.appendChild(badge);
+            }
+          });
+        });
+      }
+
+      function tick() {
+        try { atualizaVisivel(); } catch (_e) {}
+        try { atualizaLista(); } catch (_e) {}
+      }
+      tick();
+      // Recheca a cada minuto (badge AO VIVO precisa virar/ perder).
+      setInterval(tick, 60 * 1000);
+    })();
+  </script>
+
+
+</body></html>
