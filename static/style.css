@@ -644,9 +644,11 @@ time.ao-vivo { color: var(--danger-fg); }
 .btn:active { transform: scale(0.97); }
 
 /* Botões coloridos: hover preserva a cor do texto (não herda a:hover verde).
-   Usa `:where()` pra zerar especificidade e não brigar com variantes.
+   Seletores sem :where() pra ter especificidade (0,2,0) > a:hover (0,1,1).
 */
-:where(.btn-google, .btn-outlook, .btn-call):hover {
+.btn-google:hover,
+.btn-outlook:hover,
+.btn-call:hover {
   color: #fff;
   text-decoration: none;
 }
