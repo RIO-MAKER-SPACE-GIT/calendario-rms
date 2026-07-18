@@ -3,15 +3,11 @@ title: Call do Makerspace
 inicio: 2026-07-04T14:00:00-03:00
 fim: 2026-07-04T15:00:00-03:00
 local: Jitsi
-link_call: https://meet.jit.si/riomakerspace
-descricao: Calls mensais abertas do Rio Makerspace. Todo 1º e 3º sábado às 14h.
+link_call: https://meet.jit.si/rms-makerspace-call
+descricao: Calls abertas do Rio Makerspace. Todo 1º e 3º sábado às 14h.
 rrule: FREQ=MONTHLY;BYDAY=SA;BYSETPOS=1,3
 exdates:
-  - 2026-09-05T14:00:00-03:00
 excecoes:
-  - data: 2026-08-15T14:00:00-03:00
-    titulo: "Call especial: Impressão 3D"
-    descricao: João apresenta workflow de resin printing.
 layout: evento.njk
 ---
 
@@ -29,4 +25,4 @@ Calls abertas do Rio Makerspace acontecem no **primeiro e terceiro sábado** de 
 - Troca de experiências e dúvidas
 - Planejamento de próximos eventos e workshops
 
-Qualquer pessoa pode participar, não precisa ser membro formal. Tem algo pra apresentar? Fala com a gente no WhatsApp!
+Qualquer pessoa pode participar, não precisa ser membro formal. Tem algo pra apresentar? Fala com a gente no [WhatsApp](https://chat.whatsapp.com/KkQGRYv6HLYCCNTMao4uVF)!
