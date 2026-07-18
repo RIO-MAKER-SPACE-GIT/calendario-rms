@@ -753,6 +753,29 @@ time.ao-vivo { color: var(--danger-fg); }
   margin-top: 0.75rem;
 }
 
+/* Link discreto pra .ics flat (workaround Proton/sem BYSETPOS) */
+.ics-flat-link {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+.ics-flat-link a {
+  color: var(--text-dim);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.ics-flat-link a:hover {
+  color: var(--text);
+  text-decoration-thickness: 2px;
+}
+
+.ics-flat-link code {
+  font-size: 0.85em;
+}
+
 /* —— Footer ——————————————————————————————————————————— */
 .site-footer {
   border-top: 1px solid var(--border);

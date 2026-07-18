@@ -167,6 +167,15 @@
         única (one-shot) — não atualiza.
       </p>
     </details>
+
+    {% if rrule %}
+    <p class="ics-flat-link">
+      Cliente sem suporte a <code>BYSETPOS</code> (ex.: Proton Calendar)?
+      <a href="/cal/{{ slug }}-flat.ics" download>Versão expandida (.ics)</a>
+      — 12 próximas ocorrências como eventos individuais.
+      Re-baixe periodicamente para atualizar cancelamentos.
+    </p>
+    {% endif %}
   </section>
 </article>
 {% endblock %}

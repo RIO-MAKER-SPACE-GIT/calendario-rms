@@ -1,4 +1,4 @@
-import ical from "npm:ical-generator@8";
+import ical, { ICalEventStatus } from "npm:ical-generator@8";
 import rrule from "npm:rrule@2.8.1";
 import { parse as parseYaml } from "https://deno.land/std@0.224.0/yaml/mod.ts";
 
@@ -199,6 +199,108 @@ function gerarIcs(ev: EventoFrontmatter, slug: string): string {
   return cal.toString();
 }
 
+/**
+ * Gera `.ics` "flat" (expandido): cada ocorrência vira um VEVENT individual
+ * com mesmo UID + RECURRENCE-ID único. Sem RRULE, sem EXDATE.
+ *
+ * Workaround pra clientes que não suportam BYSETPOS ou RRULE complexa
+ * (ex.: Proton Calendar). Não é assinável — user precisa re-baixar pra
+ * atualizar cancelamentos/exceções.
+ *
+ * Retorna null quando o evento não tem rrule (one-off não precisa de flat).
+ */
+function gerarIcsFlat(ev: EventoFrontmatter, slug: string): string | null {
+  if (!ev.rrule) return null;
+
+  const inicio = paraUtc(ev.inicio);
+  const fim = paraUtc(ev.fim);
+  const duracaoMs = fim.getTime() - inicio.getTime();
+  const agora = new Date();
+
+  const cal = ical({
+    name: `${ev.title} (expandido)`,
+    prodId: {
+      company: "Rio Makerspace",
+      product: "Calendário",
+      language: "PT",
+    },
+  });
+
+  const uid = `${slug}@${DOMINIO}`;
+
+  // Datas de exceções: entram como VEVENT próprio (SEQUENCE:1) no loop
+  // abaixo, então não duplicamos como ocorrência normal.
+  const excecoesDatas = new Set(
+    (ev.excecoes || []).map((e) => paraUtc(e.data).getTime()),
+  );
+
+  // 1) Ocorrências normais (12 próximas futuras, já filtrando exdates).
+  //    Exceções mescladas pelo expandirOcorrencias (titulo próprio) são
+  //    puladas aqui — entram pelo loop de exceções abaixo com SEQUENCE:1.
+  const ocorrencias = expandirOcorrencias(ev, 12);
+  for (const occ of ocorrencias) {
+    const occInicio = new Date(occ.iso);
+    if (excecoesDatas.has(occInicio.getTime())) continue;
+    const occFim = new Date(occ.fim_iso);
+    cal.createEvent({
+      id: uid,
+      start: occInicio,
+      end: occFim,
+      summary: occ.titulo || ev.title,
+      description: ev.descricao,
+      location: ev.local,
+      url: ev.link_call,
+      stamp: new Date(),
+      sequence: 0,
+      recurrenceId: occInicio,
+    });
+  }
+
+  // 2) Exceções (todas, passadas ou futuras): VEVENT com SEQUENCE:1 e
+  //    summary/description próprios. Clientes casam por (UID, RECURRENCE-ID)
+  //    e sobrescrevem a ocorrência normal correspondente.
+  for (const exc of ev.excecoes || []) {
+    const excInicio = paraUtc(exc.data);
+    const excFim = new Date(excInicio.getTime() + duracaoMs);
+    cal.createEvent({
+      id: uid,
+      start: excInicio,
+      end: excFim,
+      summary: exc.titulo,
+      description: exc.descricao || ev.descricao,
+      location: ev.local,
+      url: ev.link_call,
+      stamp: new Date(),
+      sequence: 1,
+      recurrenceId: excInicio,
+    });
+  }
+
+  // 3) Exdates futuros: VEVENT com STATUS:CANCELLED. Sinaliza remoção ao
+  //    cliente na re-import. Passados não incluímos (não estão no calendário
+  //    do user).
+  for (const exd of ev.exdates || []) {
+    const exdInicio = paraUtc(exd);
+    if (exdInicio.getTime() < agora.getTime()) continue;
+    const exdFim = new Date(exdInicio.getTime() + duracaoMs);
+    cal.createEvent({
+      id: uid,
+      start: exdInicio,
+      end: exdFim,
+      summary: `Cancelada: ${ev.title}`,
+      description: "Ocorrência cancelada.",
+      location: ev.local,
+      url: ev.link_call,
+      stamp: new Date(),
+      sequence: 1,
+      status: ICalEventStatus.CANCELLED,
+      recurrenceId: exdInicio,
+    });
+  }
+
+  return cal.toString();
+}
+
 export default function (site: any) {
   site.preprocess([".md"], (pages: any[]) => {
     const agora = new Date();
@@ -284,6 +386,13 @@ export default function (site: any) {
       const outPath = join(outDir, `${slug}.ics`);
       await Deno.writeTextFile(outPath, ics);
       console.log(`  gerado: cal/${slug}.ics`);
+
+      const flat = gerarIcsFlat(fm, slug);
+      if (flat) {
+        const flatPath = join(outDir, `${slug}-flat.ics`);
+        await Deno.writeTextFile(flatPath, flat);
+        console.log(`  gerado: cal/${slug}-flat.ics`);
+      }
     }
   });
 }

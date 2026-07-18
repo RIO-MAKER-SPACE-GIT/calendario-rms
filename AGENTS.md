@@ -50,7 +50,7 @@ Regras do schema:
 - `exdates[]` = ocorrências canceladas → viram `EXDATE` no `.ics` e somem da lista HTML.
 - `excecoes[]` = ocorrência modificada (tema/presentador) → vira `VEVENT` extra com `RECURRENCE-ID` no `.ics`, e na lista HTML mostra o `titulo` da exceção em vez do default.
 
-## Os 4 botões de calendário (por evento)
+## Os 4 botões de calendário + link flat (por evento)
 
 Na página do evento (`evento.njk`), lado a lado:
 
@@ -60,6 +60,8 @@ Na página do evento (`evento.njk`), lado a lado:
 4. **Assinar** — `<a href="webcal://calendario.riomakerspace.com.br/cal/<slug>.ics">` (assinatura: cliente refetcha e pega updates de `EXDATE`/`excecoes`)
 
 Botão extra: **Entrar na call** → `<a href="{{ url }}">` (campo `url` do frontmatter).
+
+Link discreto abaixo dos botões (só eventos com `rrule`): **Versão expandida (.ics flat)** → `<a href="/cal/<slug>-flat.ics" download>`. Workaround pra clientes que não suportam `BYSETPOS` ou `RRULE` complexa (ex.: Proton Calendar). Gera 12 VEVENTs individuais com mesmo `UID` + `RECURRENCE-ID` único (sem `RRULE`, sem `EXDATE`). Exceções entram como `VEVENT` com `SEQUENCE:1` e `summary` próprio; `exdates` futuros entram como `VEVENT` com `STATUS:CANCELLED` + `SEQUENCE:1` (sinaliza remoção na re-import). Não é assinável — user precisa re-baixar periodicamente para atualizar cancelamentos.
 
 ## Estrutura do projeto
 
@@ -74,11 +76,11 @@ Botão extra: **Entrar na call** → `<a href="{{ url }}">` (campo `url` do fron
 ├── templates/
 │   ├── base.njk             # layout + Vince placeholder
 │   ├── index.njk            # lista cronológica de próximas ocorrências
-│   └── evento.njk           # página do evento + 4 botões + Entrar
+│   └── evento.njk           # página do evento + 4 botões + Entrar + link flat
 ├── static/
 │   └── style.css            # CSS cru
 └── plugins/
-    └── gen_ics.ts           # hook afterBuild: .md → .ics (RRULE + EXDATE + RECURRENCE-ID)
+    └── gen_ics.ts           # hook afterBuild: .md → .ics + .ics flat (RRULE + EXDATE + RECURRENCE-ID)
 ```
 
 ## Hook `gen_ics.ts` (afterBuild)
@@ -91,7 +93,12 @@ Responsabilidades, em ordem:
    - `EXDATE` para cada item de `exdates[]`.
    - Para cada `excecoes[]`: gerar `VEVENT` extra com mesmo `UID`, `RECURRENCE-ID` apontando pra data da exceção, e `SUMMARY`/`DESCRIPTION` sobrescritos.
 3. Escrever `_site/cal/<slug>.ics`.
-4. Calcular próximas 12 ocorrências com `npm:rrule`, filtrar `exdates`, mesclar `excecoes`. Expor no `page.data`: `proximas_ocorrencias` (array completo, embarcado como JSON inline na home/hero), `proxima_ocorrencia` (1ª futura), `excecoes_futuras` e `exdates_futuros` (só datas >= hoje, pró template renderizar as seções 2 e 3).
+4. Se evento tem `rrule`: construir também `_site/cal/<slug>-flat.ics` (versão expandida, sem `RRULE`):
+   - 12 ocorrências individuais via `expandirOcorrencias`, cada uma `VEVENT` com `UID` + `RECURRENCE-ID` + `SEQUENCE:0`.
+   - `excecoes[]` (todas): `VEVENT` com `SEQUENCE:1`, `RECURRENCE-ID=data`, `summary`/`description` próprios.
+   - `exdates[]` futuros (>= hoje): `VEVENT` com `STATUS:CANCELLED`, `SEQUENCE:1`, `RECURRENCE-ID=data`, `summary="Cancelada: <titulo>"`.
+   - Eventos sem `rrule` (one-off) **não** geram flat (seria idêntico ao `.ics` normal).
+5. Calcular próximas 12 ocorrências com `npm:rrule`, filtrar `exdates`, mesclar `excecoes`. Expor no `page.data`: `proximas_ocorrencias` (array completo, embarcado como JSON inline na home/hero), `proxima_ocorrencia` (1ª futura), `excecoes_futuras` e `exdates_futuros` (só datas >= hoje, pró template renderizar as seções 2 e 3).
 
 ## Comandos
 
@@ -101,11 +108,12 @@ Responsabilidades, em ordem:
 
 ## Validação manual (sempre após mexer em `.ics`)
 
-1. `deno task build` → confirmar que `_site/cal/*.ics` foi gerado.
+1. `deno task build` → confirmar que `_site/cal/*.ics` foi gerado (e `_site/cal/<slug>-flat.ics` para eventos com `rrule`).
 2. `deno task serve` → abrir `http://localhost:3000/cal/<slug>.ics` no browser, deve baixar arquivo `.ics` válido (não renderizar como texto).
 3. Importar o `.ics` no Google Calendar (Add by URL com `https://...`) e no Apple Calendar (Add subscription com `webcal://...`).
 4. Editar `exdates` no `.md`, rebuildar, re-add → confirmar que a ocorrência cancelada some.
 5. Editar `excecoes` no `.md`, rebuildar → confirmar que o título da ocorrência modificada aparece no calendário.
+6. Importar `_site/cal/<slug>-flat.ics` no Proton Calendar → todas as 12 ocorrências devem entrar; `exdates` futuros devem entrar como `STATUS:CANCELLED` e `excecoes` devem mostrar o `titulo` próprio.
 
 ## Fonts de verdade (sempre consultar)
 
