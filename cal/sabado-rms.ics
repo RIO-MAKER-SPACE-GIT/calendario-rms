@@ -1,0 +1,19 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Rio Makerspace//Calendário//PT
+NAME:Sábado RMS
+X-WR-CALNAME:Sábado RMS
+BEGIN:VEVENT
+UID:sabado-rms@calendario.riomakerspace.com.br
+SEQUENCE:0
+DTSTAMP:20260718T160258Z
+DTSTART:20260704T170000Z
+DTEND:20260704T180000Z
+RRULE:FREQ=MONTHLY;BYDAY=SA;BYSETPOS=1,3
+SUMMARY:Sábado RMS
+LOCATION:Jitsi
+DESCRIPTION:Encontro quinzenal aberto do Rio Makerspace. Todo 1º e 3º s
+ ábado às 14h.
+URL;VALUE=URI:https://meet.jit.si/rms-makerspace-call
+END:VEVENT
+END:VCALENDAR
