@@ -61,7 +61,7 @@ Na página do evento (`evento.njk`), lado a lado:
 
 Botão extra: **Entrar na call** → `<a href="{{ url }}">` (campo `url` do frontmatter).
 
-Link discreto abaixo dos botões (só eventos com `rrule`): **Versão expandida (.ics flat)** → `<a href="/cal/<slug>-flat.ics" download>`. Workaround pra clientes que não suportam `BYSETPOS` ou `RRULE` complexa (ex.: Proton Calendar). Gera 12 VEVENTs individuais com mesmo `UID` + `RECURRENCE-ID` único (sem `RRULE`, sem `EXDATE`). Exceções entram como `VEVENT` com `SEQUENCE:1` e `summary` próprio; `exdates` futuros entram como `VEVENT` com `STATUS:CANCELLED` + `SEQUENCE:1` (sinaliza remoção na re-import). Não é assinável — user precisa re-baixar periodicamente para atualizar cancelamentos.
+Link discreto abaixo dos botões (só eventos com `rrule`): **Versão expandida (.ics flat)** → `<a href="/cal/<slug>-flat.ics" download>`. Workaround pra clientes que não suportam `BYSETPOS` ou `RRULE` complexa (ex.: Proton Calendar, que rejeita `RECURRENCE-ID` sem `VEVENT` mestre com `RRULE`). Gera 12 `VEVENT`s individuais com `UID` determinístico por data (`<slug>-<timestampUTC>@<dominio>`), sem `RRULE`, sem `EXDATE`, sem `RECURRENCE-ID`. Exceções entram como `VEVENT` com mesmo `UID` da ocorrência daquela data + `SEQUENCE:1` + `summary` próprio (re-import sobrescreve). `exdates` futuros são **omitidos** (sem `VEVENT` mestre, não há forma RFC-correct de sinalizar remoção — cliente rejeita `STATUS:CANCELLED` + `RECURRENCE-ID` órfão). Consequência: cancelamentos não se propagam no flat; user que quer consistência total deve assinar via `webcal://`. Não é assinável — user re-baixa periodicamente só para atualizar exceções.
 
 ## Estrutura do projeto
 
@@ -94,9 +94,9 @@ Responsabilidades, em ordem:
    - Para cada `excecoes[]`: gerar `VEVENT` extra com mesmo `UID`, `RECURRENCE-ID` apontando pra data da exceção, e `SUMMARY`/`DESCRIPTION` sobrescritos.
 3. Escrever `_site/cal/<slug>.ics`.
 4. Se evento tem `rrule`: construir também `_site/cal/<slug>-flat.ics` (versão expandida, sem `RRULE`):
-   - 12 ocorrências individuais via `expandirOcorrencias`, cada uma `VEVENT` com `UID` + `RECURRENCE-ID` + `SEQUENCE:0`.
-   - `excecoes[]` (todas): `VEVENT` com `SEQUENCE:1`, `RECURRENCE-ID=data`, `summary`/`description` próprios.
-   - `exdates[]` futuros (>= hoje): `VEVENT` com `STATUS:CANCELLED`, `SEQUENCE:1`, `RECURRENCE-ID=data`, `summary="Cancelada: <titulo>"`.
+   - 12 ocorrências individuais via `expandirOcorrencias`, cada uma `VEVENT` com `UID` determinístico por data (`<slug>-<timestampUTC>@<dominio>`) + `SEQUENCE:0`.
+   - `excecoes[]` (todas): `VEVENT` com mesmo `UID` da ocorrência daquela data + `SEQUENCE:1` + `summary`/`description` próprios (re-import sobrescreve).
+   - `exdates[]` futuros: **omitidos** (sem `VEVENT` mestre, não há forma RFC-correct de sinalizar remoção — cliente rejeita `STATUS:CANCELLED` + `RECURRENCE-ID` órfão).
    - Eventos sem `rrule` (one-off) **não** geram flat (seria idêntico ao `.ics` normal).
 5. Calcular próximas 12 ocorrências com `npm:rrule`, filtrar `exdates`, mesclar `excecoes`. Expor no `page.data`: `proximas_ocorrencias` (array completo, embarcado como JSON inline na home/hero), `proxima_ocorrencia` (1ª futura), `excecoes_futuras` e `exdates_futuros` (só datas >= hoje, pró template renderizar as seções 2 e 3).
 
@@ -113,7 +113,7 @@ Responsabilidades, em ordem:
 3. Importar o `.ics` no Google Calendar (Add by URL com `https://...`) e no Apple Calendar (Add subscription com `webcal://...`).
 4. Editar `exdates` no `.md`, rebuildar, re-add → confirmar que a ocorrência cancelada some.
 5. Editar `excecoes` no `.md`, rebuildar → confirmar que o título da ocorrência modificada aparece no calendário.
-6. Importar `_site/cal/<slug>-flat.ics` no Proton Calendar → todas as 12 ocorrências devem entrar; `exdates` futuros devem entrar como `STATUS:CANCELLED` e `excecoes` devem mostrar o `titulo` próprio.
+6. Importar `_site/cal/<slug>-flat.ics` no Proton Calendar → todas as 12 ocorrências devem entrar; `excecoes` devem mostrar o `titulo` próprio. `exdates` futuros não aparecem (omitidos por design — ver docstring de `gerarIcsFlat`).
 
 ## Fonts de verdade (sempre consultar)
 

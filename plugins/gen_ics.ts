@@ -201,11 +201,26 @@ function gerarIcs(ev: EventoFrontmatter, slug: string): string {
 
 /**
  * Gera `.ics` "flat" (expandido): cada ocorrência vira um VEVENT individual
- * com mesmo UID + RECURRENCE-ID único. Sem RRULE, sem EXDATE.
+ * com UID determinístico por data. Sem RRULE, sem EXDATE, sem RECURRENCE-ID.
  *
  * Workaround pra clientes que não suportam BYSETPOS ou RRULE complexa
- * (ex.: Proton Calendar). Não é assinável — user precisa re-baixar pra
- * atualizar cancelamentos/exceções.
+ * (ex.: Proton Calendar, que rejeita RECURRENCE-ID sem VEVENT mestre com
+ * RRULE — erro "Não foi possível encontrar o evento recorrente original").
+ *
+ * UID por ocorrência = `<slug>-<YYYYMMDDTHHMMSSZ>@<dominio>` é determinístico:
+ * re-baixar gera o mesmo UID, e clientes casam por UID pra upsert (sobrescreve
+ * em vez de duplicar).
+ *
+ * Exceções (temáticas): usam mesmo UID da ocorrência normal daquela data +
+ * SEQUENCE:1 + summary próprio. Re-import sobrescreve a versão default.
+ *
+ * Exdates futuros: **omitidos** (nenhum VEVENT gerado). Sem VEVENT mestre com
+ * RRULE, não há forma RFC-correct de sinalizar remoção — cliente não aceita
+ * STATUS:CANCELLED + RECURRENCE-ID órfão. Consequência: se user já importou
+ * versão anterior do flat e RMS cancelar ocorrência futura, ocorrência antiga
+ * permanece no calendário do user como lixo até ser apagada manualmente.
+ * User que quer consistência total deve assinar via `webcal://` (fonte da
+ * verdade). Flat é workaround de importação, não de sincronização.
  *
  * Retorna null quando o evento não tem rrule (one-off não precisa de flat).
  */
@@ -215,7 +230,6 @@ function gerarIcsFlat(ev: EventoFrontmatter, slug: string): string | null {
   const inicio = paraUtc(ev.inicio);
   const fim = paraUtc(ev.fim);
   const duracaoMs = fim.getTime() - inicio.getTime();
-  const agora = new Date();
 
   const cal = ical({
     name: `${ev.title} (expandido)`,
@@ -226,44 +240,47 @@ function gerarIcsFlat(ev: EventoFrontmatter, slug: string): string | null {
     },
   });
 
-  const uid = `${slug}@${DOMINIO}`;
+  // UID determinístico por ocorrência: <slug>-<timestampUTC>@<dominio>
+  const uidPara = (d: Date): string => `${slug}-${fmtGoogle(d)}@${DOMINIO}`;
 
-  // Datas de exceções: entram como VEVENT próprio (SEQUENCE:1) no loop
-  // abaixo, então não duplicamos como ocorrência normal.
-  const excecoesDatas = new Set(
-    (ev.excecoes || []).map((e) => paraUtc(e.data).getTime()),
-  );
+  // Mapa de exceções por timestamp pra casar com ocorrências normais.
+  const excecoesMap = new Map<number, { titulo: string; descricao?: string }>();
+  for (const exc of ev.excecoes || []) {
+    excecoesMap.set(paraUtc(exc.data).getTime(), {
+      titulo: exc.titulo,
+      descricao: exc.descricao,
+    });
+  }
 
   // 1) Ocorrências normais (12 próximas futuras, já filtrando exdates).
-  //    Exceções mescladas pelo expandirOcorrencias (titulo próprio) são
-  //    puladas aqui — entram pelo loop de exceções abaixo com SEQUENCE:1.
+  //    Exceções (datas em excecoesMap) são puladas aqui e entram pelo
+  //    loop 2 abaixo com SEQUENCE:1 + summary próprio.
   const ocorrencias = expandirOcorrencias(ev, 12);
   for (const occ of ocorrencias) {
     const occInicio = new Date(occ.iso);
-    if (excecoesDatas.has(occInicio.getTime())) continue;
+    if (excecoesMap.has(occInicio.getTime())) continue;
     const occFim = new Date(occ.fim_iso);
     cal.createEvent({
-      id: uid,
+      id: uidPara(occInicio),
       start: occInicio,
       end: occFim,
-      summary: occ.titulo || ev.title,
+      summary: ev.title,
       description: ev.descricao,
       location: ev.local,
       url: ev.link_call,
       stamp: new Date(),
       sequence: 0,
-      recurrenceId: occInicio,
     });
   }
 
-  // 2) Exceções (todas, passadas ou futuras): VEVENT com SEQUENCE:1 e
-  //    summary/description próprios. Clientes casam por (UID, RECURRENCE-ID)
-  //    e sobrescrevem a ocorrência normal correspondente.
+  // 2) Exceções (todas, passadas ou futuras): VEVENT com mesmo UID da
+  //    ocorrência normal daquela data + SEQUENCE:1 + summary/description
+  //    próprios. Re-import casa por UID e sobrescreve.
   for (const exc of ev.excecoes || []) {
     const excInicio = paraUtc(exc.data);
     const excFim = new Date(excInicio.getTime() + duracaoMs);
     cal.createEvent({
-      id: uid,
+      id: uidPara(excInicio),
       start: excInicio,
       end: excFim,
       summary: exc.titulo,
@@ -272,31 +289,10 @@ function gerarIcsFlat(ev: EventoFrontmatter, slug: string): string | null {
       url: ev.link_call,
       stamp: new Date(),
       sequence: 1,
-      recurrenceId: excInicio,
     });
   }
 
-  // 3) Exdates futuros: VEVENT com STATUS:CANCELLED. Sinaliza remoção ao
-  //    cliente na re-import. Passados não incluímos (não estão no calendário
-  //    do user).
-  for (const exd of ev.exdates || []) {
-    const exdInicio = paraUtc(exd);
-    if (exdInicio.getTime() < agora.getTime()) continue;
-    const exdFim = new Date(exdInicio.getTime() + duracaoMs);
-    cal.createEvent({
-      id: uid,
-      start: exdInicio,
-      end: exdFim,
-      summary: `Cancelada: ${ev.title}`,
-      description: "Ocorrência cancelada.",
-      location: ev.local,
-      url: ev.link_call,
-      stamp: new Date(),
-      sequence: 1,
-      status: ICalEventStatus.CANCELLED,
-      recurrenceId: exdInicio,
-    });
-  }
+  // 3) Exdates: NENHUM VEVENT gerado (ver docstring da função).
 
   return cal.toString();
 }
