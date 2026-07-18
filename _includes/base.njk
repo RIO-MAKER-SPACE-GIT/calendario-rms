@@ -117,6 +117,135 @@
         }
       });
     })();
+
+    // —— Calendário runtime ———————————————————————————————
+    // Sem framework. Lê data-attributes embarcados no build e:
+    //   1. esconde ocorrências passadas,
+    //   2. destaca a 1ª ocorrência futura como "Próxima",
+    //   3. exibe badge "AO VIVO" quando uma ocorrência está rolando agora.
+    // Sem fetch, sem rrule client-side. Reordena o que já está no HTML.
+    (function () {
+      const MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+      const DIAS = ['dom','seg','ter','qua','qui','sex','sáb'];
+
+      function fmtBRT(d) {
+        const parts = new Intl.DateTimeFormat('pt-BR', {
+          timeZone: 'America/Sao_Paulo',
+          weekday: 'short', day: '2-digit', month: 'short', year: 'numeric',
+          hour: '2-digit', minute: '2-digit', hour12: false,
+        }).formatToParts(d);
+        const get = (t) => parts.find((p) => p.type === t)?.value || '';
+        const wd = get('weekday').replace('.','');
+        const day = get('day');
+        const mon = get('month').replace('.','').slice(0,3);
+        const yr = get('year');
+        const h = get('hour');
+        const m = get('minute');
+        return wd + ', ' + day + ' ' + mon + ' ' + yr + ' — ' + h + 'h' + m;
+      }
+
+      function parseIso(s) { return new Date(s); }
+
+      // Atualiza o <time> com a próxima ocorrência real, dentro de cards/headers.
+      function atualizaVisivel() {
+        const agora = Date.now();
+        document.querySelectorAll('[data-ocorrencia-visivel]').forEach(function (el) {
+          // Usa o JSON embarcado próximo, se houver, pra escolher a próxima real.
+          const card = el.closest('[data-evento-card]') || el.closest('.evento-pagina');
+          let ocorr = null;
+          if (card) {
+            const script = card.querySelector('script[data-ocorrencias]');
+            if (script) {
+              try {
+                const lista = JSON.parse(script.textContent);
+                ocorr = (lista || []).find(function (o) {
+                  return parseIso(o.fim_iso || o.iso).getTime() >= agora;
+                }) || lista[0];
+              } catch (_e) {}
+            }
+          }
+          if (!ocorr) return;
+          const inicio = parseIso(ocorr.iso);
+          const fim = parseIso(ocorr.fim_iso || ocorr.iso);
+          el.setAttribute('datetime', ocorr.iso);
+          el.setAttribute('data-inicio', ocorr.iso);
+          el.setAttribute('data-fim', ocorr.fim_iso || ocorr.iso);
+          el.textContent = fmtBRT(inicio);
+          // Badge AO VIVO no card/header
+          if (agora >= inicio.getTime() && agora < fim.getTime()) {
+            el.classList.add('ao-vivo');
+            let badge = el.parentNode.querySelector('.badge-ao-vivo');
+            if (!badge) {
+              badge = document.createElement('span');
+              badge.className = 'badge-ao-vivo';
+              badge.textContent = 'AO VIVO';
+              el.parentNode.insertBefore(badge, el.nextSibling);
+            }
+          }
+        });
+      }
+
+      // Lista de ocorrências (página do evento): esconde passadas, marca próxima.
+      function atualizaLista() {
+        const agora = Date.now();
+        let primeiraMarcada = false;
+        document.querySelectorAll('[data-ocorrencias-lista]').forEach(function (ul) {
+          let proximoLi = null;
+          let proximoInicio = Infinity;
+          ul.querySelectorAll('li[data-ocorrencia]').forEach(function (li) {
+            const inicio = parseIso(li.getAttribute('data-inicio'));
+            const fim = parseIso(li.getAttribute('data-fim'));
+            const tituloExc = li.getAttribute('data-titulo');
+            // Remove marcadores e badges aplicados em runs anteriores.
+            li.classList.remove('proxima','ao-vivo');
+            li.querySelector('.label-proxima')?.remove();
+            li.querySelector('.badge-ao-vivo')?.remove();
+            const time = li.querySelector('time');
+            if (time) time.textContent = fmtBRT(inicio);
+
+            // Esconde ocorrências passadas.
+            if (fim.getTime() < agora) {
+              li.style.display = 'none';
+              return;
+            }
+            li.style.display = '';
+
+            // AO VIVO
+            if (agora >= inicio.getTime() && agora < fim.getTime()) {
+              li.classList.add('ao-vivo');
+              const badge = document.createElement('span');
+              badge.className = 'badge-ao-vivo';
+              badge.textContent = 'AO VIVO';
+              li.appendChild(badge);
+            }
+
+            // Próxima = 1ª ocorrência futura que ainda não está "ao vivo".
+            if (!primeiraMarcada && inicio.getTime() > agora && inicio.getTime() < proximoInicio) {
+              proximoInicio = inicio.getTime();
+              proximoLi = li;
+            }
+          });
+          if (proximoLi && !proximoLi.classList.contains('ao-vivo')) {
+            proximoLi.classList.add('proxima');
+            const label = document.createElement('span');
+            label.className = 'label-proxima';
+            label.textContent = 'Próxima';
+            const dot = proximoLi.querySelector('.time-dot');
+            if (dot) dot.classList.add('next');
+            proximoLi.insertBefore(label, proximoLi.firstChild);
+            primeiraMarcada = true;
+          }
+        });
+      }
+
+      function tick() {
+        try { atualizaVisivel(); } catch (_e) {}
+        try { atualizaLista(); } catch (_e) {}
+      }
+      tick();
+      // Recheca a cada minuto (badge AO VIVO precisa virar/ perder).
+      setInterval(tick, 60 * 1000);
+    })();
   </script>
 </body>
 </html>

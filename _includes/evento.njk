@@ -19,7 +19,12 @@
           <circle cx="12" cy="12" r="10"/>
           <polyline points="12 6 12 12 16 14"/>
         </svg>
-        {{ proximas_ocorrencias[0].data_fmt }} — BRT
+        <time
+          data-ocorrencia-visivel
+          data-inicio="{{ proximas_ocorrencias[0].iso }}"
+          data-fim="{{ proximas_ocorrencias[0].fim_iso }}"
+          datetime="{{ proximas_ocorrencias[0].iso }}"
+        >{{ proximas_ocorrencias[0].data_fmt }}</time> — BRT
       </span>
       {% endif %}
     </p>
@@ -32,11 +37,15 @@
   {% if proximas_ocorrencias and proximas_ocorrencias.length > 0 %}
   <section class="proximas">
     <h2>Próximas ocorrências</h2>
-    <ul class="ocorrencias">
+    <ul class="ocorrencias" data-ocorrencias-lista>
       {% for occ in proximas_ocorrencias %}
-      <li{% if loop.first %} class="proxima"{% endif %}>
-        <span class="time-dot {% if loop.first %}next{% endif %}" aria-hidden="true"></span>
-        {% if loop.first %}<span class="label-proxima">Próxima</span>{% endif %}
+      <li
+        data-ocorrencia
+        data-inicio="{{ occ.iso }}"
+        data-fim="{{ occ.fim_iso }}"
+        {% if occ.titulo %}data-titulo="{{ occ.titulo }}"{% endif %}
+      >
+        <span class="time-dot" aria-hidden="true"></span>
         <time datetime="{{ occ.iso }}">{{ occ.data_fmt }}</time>
         {% if occ.titulo %}
         <span class="badge">

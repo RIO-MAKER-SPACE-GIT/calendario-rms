@@ -25,6 +25,7 @@ interface EventoFrontmatter {
 
 interface Ocorrencia {
   iso: string;
+  fim_iso: string;
   inicio_utc: string;       // YYYYMMDDTHHMMSSZ (Google)
   fim_utc: string;          // YYYYMMDDTHHMMSSZ (Google)
   inicio_utc_iso: string;   // ISO 8601 com Z (Outlook)
@@ -83,6 +84,7 @@ function fmtHumano(d: Date): string {
 function buildOcorrencia(inicio: Date, fim: Date, titulo?: string): Ocorrencia {
   return {
     iso: inicio.toISOString(),
+    fim_iso: fim.toISOString(),
     inicio_utc: fmtGoogle(inicio),
     fim_utc: fmtGoogle(fim),
     inicio_utc_iso: fmtIso(inicio),
@@ -92,7 +94,7 @@ function buildOcorrencia(inicio: Date, fim: Date, titulo?: string): Ocorrencia {
   };
 }
 
-function expandirOcorrencias(ev: EventoFrontmatter, limite = 4): Ocorrencia[] {
+function expandirOcorrencias(ev: EventoFrontmatter, limite = 12): Ocorrencia[] {
   const inicio = paraUtc(ev.inicio);
   const fim = paraUtc(ev.fim);
   const duracaoMs = fim.getTime() - inicio.getTime();

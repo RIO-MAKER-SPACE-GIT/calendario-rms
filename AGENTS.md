@@ -14,8 +14,9 @@ Site estático de calendário do Rio Makerspace. Calls recorrentes 1º e 3º sá
 
 ## Princípios
 
-- **Zero JavaScript client-side.** Site é HTML+CSS estático. Botões de calendário são `<a href>` apontando pra URLs `https://`/`webcal://`/`data:` — sem fetch, sem onclick.
-- **Build faz tudo.** O `.ics` é gerado em build time por hook `afterBuild`, não em runtime.
+- **Pouco JavaScript client-side.** Site é SSG (HTML+CSS), mas há um snippet vanilla inline no `base.njk` que executa em runtime pra: destacar a próxima ocorrência real (não a do build), esconder ocorrências passadas, e exibir badge "AO VIVO" quando uma ocorrência está rolando agora. Sem framework, sem fetch, sem onclick nos botões de calendário (esses continuam `<a href>` puro).
+- **Build expande, runtime reordena.** O hook `gen_ics.ts` gera `proximas_ocorrencias` com 12 itens no build, e os templates embarcam cada data como `data-attribute` (`data-inicio`, `data-fim`, `data-titulo`) nos elementos. O JS só esconde passadas, marca "Próxima" e "AO VIVO". Sem biblioteca de `rrule` client-side.
+- **`.ics` é gerado em build time** por hook `afterBuild`, não em runtime.
 - **1 arquivo = 1 série recorrente.** Não criar 1 `.md` por ocorrência. Usar `rrule` + `exdates` + `excecoes`.
 - **Preservar motivação SSG.** Não introduzir SaaS (Luma, Google Calendar embed) nem backend dinâmico. MVP sem RSVP serverless; backend Cloudflare Worker é fase 2 se necessário.
 
@@ -117,7 +118,8 @@ APIs do Lume e das libs mudam. **Sempre que houver dúvida sobre API, syntax, ou
 
 ## O que NÃO fazer
 
-- Não adicionar JavaScript client-side (sem fetch nos botões, sem SPA, sem hidratação).
+- Não adicionar JavaScript client-side **extra**: o snippet inline no `base.njk` é o único permitido (destacar próxima ocorrência, esconder passadas, badge AO VIVO). Sem fetch nos botões, sem SPA, sem framework JS, sem hidratação.
+- Não introduzir biblioteca de `rrule` client-side. A expansão vem do build; o JS só reordena/filtra o que já está no HTML via `data-attribute`.
 - Não introduzir framework CSS (sem Tailwind, sem Bootstrap). CSS cru em `static/style.css`.
 - Não criar 1 `.md` por ocorrência de evento recorrente. Usar `rrule`.
 - Não hospedar o `.ics` fora do `_site/`. O Cloudflare Pages serve pela extensão com `Content-Type: text/calendar` automaticamente.

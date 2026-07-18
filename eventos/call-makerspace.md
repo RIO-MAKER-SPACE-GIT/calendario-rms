@@ -6,12 +6,8 @@ local: Discord
 link_call: https://discord.gg/riomakerspace
 descricao: Calls mensais abertas do Rio Makerspace. Todo 1º e 3º sábado às 14h.
 rrule: FREQ=MONTHLY;BYDAY=SA;BYSETPOS=1,3
-exdates:
-  - 2026-09-06T14:00:00-03:00
-excecoes:
-  - data: 2026-08-15T14:00:00-03:00
-    titulo: "Call especial: Impressão 3D"
-    descricao: João apresenta workflow de resin printing.
+exdates: 
+excecoes: 
 layout: evento.njk
 ---
 
