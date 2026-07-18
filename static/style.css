@@ -614,14 +614,114 @@ time {
 time.ao-vivo { color: var(--danger-fg); }
 
 /* —— Botões ——————————————————————————————————————————— */
-.botoes { margin-top: 2.5rem; }
-.botoes h2 { margin-top: 0; }
+.adicionar-calendario { margin-top: 2.5rem; }
+.adicionar-calendario h2 { margin-top: 0; }
 
-.btn-group {
+/* Botão "Entrar na call" largo acima do grid */
+.btn-call-largo {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  font-size: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+/* —— Grid de cards de calendário ————————————————————————————— */
+.cal-options {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
   margin: 1rem 0;
+}
+
+@media (min-width: 640px) {
+  .cal-options { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 960px) {
+  .cal-options { grid-template-columns: repeat(3, 1fr); }
+}
+
+.cal-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.1rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.cal-card:hover {
+  transform: translateY(-1px);
+}
+
+.cal-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.cal-card-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.cal-card-desc {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+  margin: 0 0 0.85rem;
+  flex: 1;
+}
+
+.cal-card-desc code {
+  font-size: 0.85em;
+}
+
+.cal-card-cta {
+  align-self: flex-start;
+  padding: 0.55rem 1rem;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .cal-card-cta {
+    align-self: stretch;
+    width: 100%;
+  }
+}
+
+/* Variantes: borda colorida no hover */
+.cal-card-google:hover {
+  border-color: #4285f4;
+  box-shadow: 0 0 0 1px #4285f4, 0 4px 14px rgba(66, 133, 244, 0.18);
+}
+
+.cal-card-outlook:hover {
+  border-color: #0078d4;
+  box-shadow: 0 0 0 1px #0078d4, 0 4px 14px rgba(0, 120, 212, 0.18);
+}
+
+.cal-card-ics:hover {
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 1px var(--accent-green),
+              0 4px 14px color-mix(in srgb, var(--accent-green) 18%, transparent);
+}
+
+.cal-card-assinar:hover {
+  border-color: var(--assinar-border);
+  box-shadow: 0 0 0 1px var(--assinar-border),
+              0 4px 14px rgba(128, 227, 246, 0.2);
+}
+
+.cal-card-flat:hover {
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 1px var(--accent-green),
+              0 4px 14px color-mix(in srgb, var(--accent-green) 18%, transparent);
 }
 
 .btn {
@@ -753,29 +853,6 @@ time.ao-vivo { color: var(--danger-fg); }
   margin-top: 0.75rem;
 }
 
-/* Link discreto pra .ics flat (workaround Proton/sem BYSETPOS) */
-.ics-flat-link {
-  margin-top: 1rem;
-  font-size: 0.85rem;
-  color: var(--text-dim);
-  line-height: 1.5;
-}
-
-.ics-flat-link a {
-  color: var(--text-dim);
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
-}
-
-.ics-flat-link a:hover {
-  color: var(--text);
-  text-decoration-thickness: 2px;
-}
-
-.ics-flat-link code {
-  font-size: 0.85em;
-}
-
 /* —— Footer ——————————————————————————————————————————— */
 .site-footer {
   border-top: 1px solid var(--border);
@@ -833,8 +910,9 @@ time.ao-vivo { color: var(--danger-fg); }
   .hero            { padding: 2rem 1rem 1.5rem; }
   .hero p          { font-size: 1rem; }
   .evento-card     { padding: 1rem; }
-  .btn-group       { gap: 0.5rem; }
   .btn             { padding: 0.6rem 0.95rem; font-size: 0.9rem; }
+  .btn-call-largo  { padding: 0.75rem 1.25rem; font-size: 0.95rem; }
+  .cal-card        { padding: 0.85rem 0.9rem 0.95rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -92,56 +92,101 @@
   </section>
   {% endif %}
 
-  <section class="botoes">
+  <section class="adicionar-calendario">
     <h2>Adicionar ao calendário</h2>
-    <div class="btn-group">
-      {% set occ = proxima_ocorrencia %}
-      {% if occ %}
-      <a class="btn btn-google" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text={{ title | urlencode }}&dates={{ occ.inicio_utc }}/{{ occ.fim_utc }}&location={{ local | urlencode }}&details={{ descricao | urlencode }}">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-          <line x1="16" y1="2" x2="16" y2="6"/>
-          <line x1="8" y1="2" x2="8" y2="6"/>
-          <line x1="3" y1="10" x2="21" y2="10"/>
-        </svg>
-        Google Calendar
-      </a>
-      <a class="btn btn-outlook" href="https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&startdt={{ occ.inicio_utc_iso }}&enddt={{ occ.fim_utc_iso }}&subject={{ title | urlencode }}&body={{ descricao | urlencode }}&location={{ local | urlencode }}">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-          <line x1="16" y1="2" x2="16" y2="6"/>
-          <line x1="8" y1="2" x2="8" y2="6"/>
-          <line x1="3" y1="10" x2="21" y2="10"/>
-        </svg>
-        Outlook
-      </a>
-      <a class="btn btn-outline" href="/cal/{{ slug }}.ics" download>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="7 10 12 15 17 10"/>
-          <line x1="12" y1="15" x2="12" y2="3"/>
-        </svg>
-        Baixar .ics
-      </a>
-      <a class="btn btn-assinar" href="webcal://calendario.riomakerspace.com.br/cal/{{ slug }}.ics">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M5 18v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/>
-          <polyline points="8 11 12 15 16 11"/>
-          <line x1="12" y1="15" x2="12" y2="3"/>
-        </svg>
-        Assinar
-      </a>
-      {% endif %}
 
-      {% if link_call %}
-      <a class="btn btn-call" href="{{ link_call }}">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-        </svg>
-        Entrar na call
-      </a>
+    {% if link_call %}
+    <a class="btn btn-call btn-call-largo" href="{{ link_call }}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+      </svg>
+      Entrar na call
+    </a>
+    {% endif %}
+
+    {% set occ = proxima_ocorrencia %}
+    {% if occ %}
+    <div class="cal-options">
+      <article class="cal-card cal-card-google">
+        <header class="cal-card-header">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <h3>Google Calendar</h3>
+        </header>
+        <p class="cal-card-desc">Abre o Google Calendar na web com o evento pré-preenchido.</p>
+        <a class="btn btn-google cal-card-cta" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text={{ title | urlencode }}&dates={{ occ.inicio_utc }}/{{ occ.fim_utc }}&location={{ local | urlencode }}&details={{ descricao | urlencode }}">
+          Abrir no Google
+        </a>
+      </article>
+
+      <article class="cal-card cal-card-outlook">
+        <header class="cal-card-header">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <h3>Outlook</h3>
+        </header>
+        <p class="cal-card-desc">Abre o Outlook Live na web com o evento pré-preenchido.</p>
+        <a class="btn btn-outlook cal-card-cta" href="https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&startdt={{ occ.inicio_utc_iso }}&enddt={{ occ.fim_utc_iso }}&subject={{ title | urlencode }}&body={{ descricao | urlencode }}&location={{ local | urlencode }}">
+          Abrir no Outlook
+        </a>
+      </article>
+
+      <article class="cal-card cal-card-ics">
+        <header class="cal-card-header">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <h3>Baixar .ics</h3>
+        </header>
+        <p class="cal-card-desc">Padrão iCalendar. Funciona em qualquer app. Importação única — não atualiza sozinho.</p>
+        <a class="btn btn-outline cal-card-cta" href="/cal/{{ slug }}.ics" download>
+          Baixar
+        </a>
+      </article>
+
+      <article class="cal-card cal-card-assinar">
+        <header class="cal-card-header">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 18v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/>
+            <polyline points="8 11 12 15 16 11"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <h3>Assinar (auto-update)</h3>
+        </header>
+        <p class="cal-card-desc">Assina via <code>webcal://</code>. App refetcha sozinho e pega cancelamentos, exceções e mudanças de tema.</p>
+        <a class="btn btn-assinar cal-card-cta" href="webcal://calendario.riomakerspace.com.br/cal/{{ slug }}.ics">
+          Assinar
+        </a>
+      </article>
+
+      {% if rrule %}
+      <article class="cal-card cal-card-flat">
+        <header class="cal-card-header">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2 2 7l10 5 10-5-10-5z"/>
+            <path d="m2 17 10 5 10-5"/>
+            <path d="m2 12 10 5 10-5"/>
+          </svg>
+          <h3>.ics expandido</h3>
+        </header>
+        <p class="cal-card-desc">12 ocorrências como eventos individuais. Maior compatibilidade. Sem auto-update — re-baixe para atualizar exceções.</p>
+        <a class="btn btn-outline cal-card-cta" href="/cal/{{ slug }}-flat.ics" download>
+          Baixar flat
+        </a>
+      </article>
       {% endif %}
     </div>
+    {% endif %}
 
     <details class="ajuda-assinar">
       <summary>Não aconteceu nada ao clicar em “Assinar”?</summary>
@@ -167,16 +212,6 @@
         única (one-shot) — não atualiza.
       </p>
     </details>
-
-    {% if rrule %}
-    <p class="ics-flat-link">
-      Cliente sem suporte a <code>BYSETPOS</code> (ex.: Proton Calendar)?
-      <a href="/cal/{{ slug }}-flat.ics" download>Versão expandida (.ics)</a>
-      — 12 próximas ocorrências como eventos individuais.
-      Re-baixe periodicamente para atualizar exceções; cancelamentos não
-      são sinalizados nessa versão (use <em>Assinar</em> para isso).
-    </p>
-    {% endif %}
   </section>
 </article>
 {% endblock %}

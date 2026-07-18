@@ -50,18 +50,23 @@ Regras do schema:
 - `exdates[]` = ocorrências canceladas → viram `EXDATE` no `.ics` e somem da lista HTML.
 - `excecoes[]` = ocorrência modificada (tema/presentador) → vira `VEVENT` extra com `RECURRENCE-ID` no `.ics`, e na lista HTML mostra o `titulo` da exceção em vez do default.
 
-## Os 4 botões de calendário + link flat (por evento)
+## Cards de calendário (por evento)
 
-Na página do evento (`evento.njk`), lado a lado:
+Na página do evento (`evento.njk`), o botão **Entrar na call** (se `link_call` existir) aparece largo acima do grid — é ação primária (participar), não de calendário.
 
-1. **Google** — `https://calendar.google.com/calendar/render?action=TEMPLATE&text=...&dates=<inicioUTC>/<fimUTC>&location=...&details=...` (URL-encoded)
-2. **Outlook** — `https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&start=...&end=...&subject=...&body=...&location=...`
-3. **Baixar `.ics`** — `<a href="/cal/<slug>.ics" download>` (importação one-shot, 1ª ocorrência)
-4. **Assinar** — `<a href="webcal://calendario.riomakerspace.com.br/cal/<slug>.ics">` (assinatura: cliente refetcha e pega updates de `EXDATE`/`excecoes`)
+Abaixo, grid responsivo (1 col mobile / 2 tablet / 3 desktop) com 5 cards:
 
-Botão extra: **Entrar na call** → `<a href="{{ url }}">` (campo `url` do frontmatter).
+1. **Google Calendar** — `https://calendar.google.com/calendar/render?action=TEMPLATE&text=...&dates=<inicioUTC>/<fimUTC>&location=...&details=...` (URL-encoded). CTA: "Abrir no Google".
+2. **Outlook** — `https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&start=...&end=...&subject=...&body=...&location=...`. CTA: "Abrir no Outlook".
+3. **Baixar `.ics`** — `<a href="/cal/<slug>.ics" download>`. Importação one-shot, 1ª ocorrência. CTA: "Baixar".
+4. **Assinar (auto-update)** — `<a href="webcal://calendario.riomakerspace.com.br/cal/<slug>.ics">`. Assinatura: cliente refetcha e pega updates de `EXDATE`/`excecoes`. CTA: "Assinar".
+5. **`.ics` expandido** — `<a href="/cal/<slug>-flat.ics" download>`. Workaround pra clientes que não suportam `BYSETPOS` ou `RRULE` complexa (ex.: Proton Calendar, que rejeita `RECURRENCE-ID` sem `VEVENT` mestre com `RRULE`). Gera 12 `VEVENT`s individuais com `UID` determinístico por data (`<slug>-<timestampUTC>@<dominio>`), sem `RRULE`, sem `EXDATE`, sem `RECURRENCE-ID`. Exceções entram como `VEVENT` com mesmo `UID` da ocorrência daquela data + `SEQUENCE:1` + `summary` próprio (re-import sobrescreve). `exdates` futuros são **omitidos** (sem `VEVENT` mestre, não há forma RFC-correct de sinalizar remoção — cliente rejeita `STATUS:CANCELLED` + `RECURRENCE-ID` órfão). Consequência: cancelamentos não se propagam no flat; user que quer consistência total deve assinar via `webcal://`. Não é assinável — user re-baixa periodicamente só para atualizar exceções. Só aparece se evento tem `rrule`.
 
-Link discreto abaixo dos botões (só eventos com `rrule`): **Versão expandida (.ics flat)** → `<a href="/cal/<slug>-flat.ics" download>`. Workaround pra clientes que não suportam `BYSETPOS` ou `RRULE` complexa (ex.: Proton Calendar, que rejeita `RECURRENCE-ID` sem `VEVENT` mestre com `RRULE`). Gera 12 `VEVENT`s individuais com `UID` determinístico por data (`<slug>-<timestampUTC>@<dominio>`), sem `RRULE`, sem `EXDATE`, sem `RECURRENCE-ID`. Exceções entram como `VEVENT` com mesmo `UID` da ocorrência daquela data + `SEQUENCE:1` + `summary` próprio (re-import sobrescreve). `exdates` futuros são **omitidos** (sem `VEVENT` mestre, não há forma RFC-correct de sinalizar remoção — cliente rejeita `STATUS:CANCELLED` + `RECURRENCE-ID` órfão). Consequência: cancelamentos não se propagam no flat; user que quer consistência total deve assinar via `webcal://`. Não é assinável — user re-baixa periodicamente só para atualizar exceções.
+Cada card: header com ícone + `<h3>`, descrição curta (1 linha de microcopy explicando o que faz e o trade-off), CTA (botão com cor do serviço). Hover do card pinta a borda com a cor do serviço.
+
+O card 5 só renderiza se evento tem `rrule` (eventos one-off não têm flat).
+
+Abaixo do grid: `<details class="ajuda-assinar">` com instruções manuais de `webcal://` por cliente (Google, Apple, Outlook, Thunderbird).
 
 ## Estrutura do projeto
 
@@ -76,7 +81,7 @@ Link discreto abaixo dos botões (só eventos com `rrule`): **Versão expandida 
 ├── templates/
 │   ├── base.njk             # layout + Vince placeholder
 │   ├── index.njk            # lista cronológica de próximas ocorrências
-│   └── evento.njk           # página do evento + 4 botões + Entrar + link flat
+│   └── evento.njk           # página do evento: Entrar na call + grid de 5 cards + ajuda
 ├── static/
 │   └── style.css            # CSS cru
 └── plugins/
